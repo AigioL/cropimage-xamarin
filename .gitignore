@@ -1,4 +1,5 @@
 bin/
 obj/
 *.userprefs
+*.suo
 /.vs/CropImage/v14
