@@ -45,7 +45,8 @@ namespace CropImage
 
         private Java.IO.File createDirectoryForPictures()
         {
-            var dir = new Java.IO.File(global::Android.OS.Environment.GetExternalStoragePublicDirectory(global::Android.OS.Environment.DirectoryPictures), "Boruto");
+            //var dir = new Java.IO.File(global::Android.OS.Environment.GetExternalStoragePublicDirectory(global::Android.OS.Environment.DirectoryPictures), "Boruto");
+            var dir = new Java.IO.File(GetExternalFilesDir(null), ".pics"); //private dir in app folder
             if (!dir.Exists())
             {
                 dir.Mkdirs();
@@ -58,9 +59,9 @@ namespace CropImage
         {
 
             Intent intent = new Intent(MediaStore.ActionImageCapture);
-
-            mImageCaptureUri = Android.Net.Uri.FromFile(new Java.IO.File(createDirectoryForPictures(), string.Format("myPhoto_{0}.jpg", System.Guid.NewGuid())));
-
+            
+            var file = new Java.IO.File(createDirectoryForPictures(), string.Format("myPhoto_{0}.jpg", System.Guid.NewGuid()));
+            mImageCaptureUri = Android.Support.V4.Content.FileProvider.GetUriForFile(this, PackageName + ".fileprovider", file);
             intent.PutExtra(MediaStore.ExtraOutput, mImageCaptureUri);
 
             try
@@ -86,7 +87,7 @@ namespace CropImage
             {
                 case PICK_FROM_CAMERA:
                     Intent intent = new Intent(this, typeof(CropImage));
-                    intent.PutExtra("image-path", mImageCaptureUri.Path);
+                    intent.PutExtra("image-path", mImageCaptureUri.ToString());
                     intent.PutExtra("scale", true);
                     StartActivity(intent);
                     break;
